@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trade UI — vitrine</title>
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../components/trade-ui.css">
+<style>
+  body { margin: 0; background: var(--bg-page); color: var(--fg-primary); font-family: var(--font-sans); }
+  main { max-width: 1200px; margin: 0 auto; padding: var(--space-8) var(--space-6) var(--space-16); }
+  section.block { margin-top: var(--space-12); }
+  .eyebrow { color: var(--fg-secondary); margin: 0 0 var(--space-2); }
+  h2 { margin: 0 0 var(--space-6); }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4); }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-5) var(--space-6); }
+  .grid4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-4); align-items: start; }
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--space-3); }
+  .sw { border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border-subtle); background: var(--bg-elevated); }
+  .sw i { display: block; height: 56px; }
+  .sw span { display: block; padding: var(--space-2) var(--space-3); font-family: var(--font-mono); font-size: 11px; color: var(--fg-secondary); }
+  .val { margin: 0 0 4px; color: var(--tu-card-fg); }
+  .val small { font-size: inherit; color: var(--fg-muted); font-weight: 500; }
+  .chg { display: inline-flex; gap: 4px; padding: 4px 10px; border-radius: var(--radius-pill); background: var(--bg-elevated); }
+  .up { color: var(--positive); } .down { color: var(--negative); }
+  .on-brand .chg { background: var(--white); color: var(--green-700); }
+  .list { list-style: none; margin: 0; padding: 0; }
+  .list li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-subtle); color: var(--fg-primary); font-variant-numeric: tabular-nums; }
+  .list li:last-child { border-bottom: 0; }
+  .nav-wrap { border-radius: var(--radius-xl); border: 1px solid var(--border-subtle); overflow-x: auto; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="vendor/react.production.min.js"></script>
+<script src="vendor/react-dom.production.min.js"></script>
+<script src="../components/vanilla/trade-ui.js"></script>
+<script>
+  var T = window.TradeUI, h = React.createElement;
+  function svg(d, extra) { return h('svg', { viewBox: '0 0 16 16', fill: 'none', stroke: 'currentColor', strokeWidth: 1.5, strokeLinecap: 'round', strokeLinejoin: 'round' }, h('path', { d: d }), extra || null); }
+  var I = {
+    plus: svg('M8 3v10M3 8h10'), arrow: svg('M5 11l6-6M6 5h5v5'),
+    bell: svg('M4 11V7a4 4 0 0 1 8 0v4l1 1H3l1-1zM6.5 13.5a1.5 1.5 0 0 0 3 0'),
+    search: svg('M10.5 10.5L14 14M7 11.5a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z'),
+    moon: svg('M13 9.5A5.5 5.5 0 0 1 6.5 3a5.5 5.5 0 1 0 6.5 6.5z')
+  };
+  var SW = ['bg-brand','action-primary','bg-brand-deep','positive','positive-fill','negative','negative-fill','info','info-fill','warning','accent-short','risk-fill','bg-page','bg-surface','bg-elevated','fg-primary','fg-secondary','fg-muted','border-subtle','border-strong'];
+  function Section(p) { return h('section', { className: 'block' }, h('p', { className: 'eyebrow' }, p.eyebrow), h('h2', { className: 'heading-2' }, p.title), p.children); }
+  function App() {
+    var th = React.useState('light'), theme = th[0], setTheme = th[1];
+    var tab = React.useState(0), active = tab[0], setActive = tab[1];
+    React.useEffect(function () { document.documentElement.setAttribute('data-theme', theme); }, [theme]);
+    var labels = ['Visão geral', 'Desempenho', 'Alocação', 'Insights', 'Relatórios'];
+    return h('main', null,
+      h('div', { className: 'nav-wrap' }, h(T.NavBar, {
+        items: labels.map(function (l, i) { return { label: l, active: i === active }; }),
+        onSelect: function (_, i) { setActive(i); },
+        actions: h(React.Fragment, null,
+          h(T.Button, { variant: 'ghost', icon: I.search, 'aria-label': 'Buscar' }),
+          h(T.Button, { variant: 'ghost', icon: I.moon, 'aria-label': 'Alternar tema', onClick: function () { setTheme(theme === 'light' ? 'dark' : 'light'); } }),
+          h(T.Button, { variant: 'ghost', icon: I.bell, 'aria-label': 'Notificações' })),
+        user: { name: 'Ana Souza', email: 'ana@exemplo.com' }
+      })),
+      h(Section, { eyebrow: '// TOKENS', title: 'Cores semânticas' },
+        h('div', { className: 'swatches' }, SW.map(function (n) {
+          return h('div', { className: 'sw', key: n }, h('i', { style: { background: 'var(--' + n + ')' } }), h('span', null, n));
+        }))),
+      h(Section, { eyebrow: '// AÇÕES', title: 'Button' },
+        h('div', { className: 'row' },
+          h(T.Button, { icon: I.plus }, 'Depositar'),
+          h(T.Button, { variant: 'secondary' }, 'Sacar'),
+          h(T.Button, { variant: 'ghost', iconRight: I.arrow }, 'Ver relatório'),
+          h(T.Button, { variant: 'accent' }, 'Começar agora'),
+          h(T.Button, { disabled: true }, 'Indisponível')),
+        h('div', { className: 'row' },
+          h(T.Button, { size: 'sm' }, 'Comprar'),
+          h(T.Button, { variant: 'secondary', size: 'sm' }, 'Vender'),
+          h(T.Button, { size: 'lg', shape: 'square', iconRight: I.arrow }, 'Executar estratégia'),
+          h(T.Button, { variant: 'secondary', icon: I.bell, 'aria-label': 'Notificações' }))),
+      h(Section, { eyebrow: '// FORMULÁRIOS', title: 'TextInput' },
+        h('div', { className: 'grid2' },
+          h(T.TextInput, { label: 'Valor do depósito', placeholder: '0,00', suffix: 'USD', hint: 'Mínimo de $10 por operação.' }),
+          h(T.TextInput, { label: 'Buscar ativo', placeholder: 'Ticker ou empresa', icon: I.search, suffix: '⌘K' }),
+          h(T.TextInput, { label: 'Stop loss', defaultValue: '63.400', suffix: 'USD', error: 'O stop precisa ficar abaixo do preço de entrada ($64.280).' }),
+          h(T.TextInput, { label: 'Carteira vinculada', defaultValue: '0x882…f91a', disabled: true, hint: 'Conecte outra carteira em Configurações.' }))),
+      h(Section, { eyebrow: '// CONTEÚDO', title: 'Card' },
+        h('div', { className: 'grid4' },
+          h(T.Card, { eyebrow: 'S&P 500', title: 'Índice', action: h(T.Button, { variant: 'ghost', size: 'sm', icon: I.arrow, 'aria-label': 'Abrir' }) },
+            h('p', { className: 'val data-lg' }, '5.021', h('small', null, ',16')), h('span', { className: 'chg up data-sm' }, '+8,65% ↗')),
+          h(T.Card, { variant: 'brand', className: 'on-brand', eyebrow: 'Maior alta', title: 'Amazon', footer: h(React.Fragment, null, h('span', null, 'Volume 2.340'), h('span', null, 'AMZN')) },
+            h('p', { className: 'val data-lg' }, '$585.235,52'), h('span', { className: 'chg data-sm' }, '+2,15% ↗')),
+          h(T.Card, { variant: 'elevated', padding: 'sm', title: 'Posições abertas' },
+            h('ul', { className: 'list' },
+              h('li', null, h('span', null, 'NVDA Long'), h('span', { className: 'up' }, '+$1.420')),
+              h('li', null, h('span', null, 'AAPL Long'), h('span', { className: 'down' }, '−$12,40')),
+              h('li', null, h('span', null, 'BTC'), h('span', { className: 'up' }, '+$585')))),
+          h(T.Card, { variant: 'deep', eyebrow: 'Alerta de IA', title: 'Rebalancear' },
+            h('p', { style: { margin: '0 0 16px', color: 'var(--offwhite)' } }, 'Exposição a big techs acima do limite. Sugestão: reduzir NVDA e girar para renda fixa.'),
+            h(T.Button, { variant: 'accent', size: 'sm', fullWidth: true }, 'Revisar sugestão'))))
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(h(App));
+</script>
+</body>
+</html>
