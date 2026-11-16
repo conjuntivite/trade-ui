@@ -41,13 +41,14 @@ Gráficos/canvas: valores resolvidos por tema em `C:/Users/User/design-systems/t
 
 ## Logos dos produtos
 
-Os três produtos usam o mesmo símbolo do gato-fantasma; **a cor do olho identifica o produto**.
+Os produtos usam o mesmo símbolo do gato-fantasma; **a cor do olho identifica o produto**.
 
 | Produto | Cor do olho | Arquivos |
 |---|---|---|
 | WCOEN | vermelho `#F0532A` | `C:/Users/User/design-systems/trade-ui/brand/wcoen/` |
 | Specium | limão `#C2F86C` | `C:/Users/User/design-systems/trade-ui/brand/specium/` |
 | xSPECTRO | azul `#4789FE` | `C:/Users/User/design-systems/trade-ui/brand/xspectro/` |
+| Conversor DEC ⇄ HEX | roxo `#B547FF` | `C:/Users/User/design-systems/trade-ui/brand/conversor/` (sem lockup) |
 
 Cada pasta tem `*-mark.svg` / `*-mark-reverso.svg` (símbolo), `*-icon-light.svg` / `*-icon-dark.svg` (ícone/favicon por tema), `*-lockup-light.svg` / `*-lockup-dark.svg` (símbolo + nome) e um `README.md`. Use a versão do tema ativo e nunca recolora o olho de um produto com a cor de outro.
 
